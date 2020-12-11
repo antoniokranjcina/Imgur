@@ -1,16 +1,19 @@
 package com.antoniokranjcina.imgur.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.antoniokranjcina.imgur.data.network.api.ImgurApi
 import com.antoniokranjcina.imgur.data.network.model.Post
 import com.antoniokranjcina.imgur.databinding.FragmentHomeBinding
+import com.antoniokranjcina.imgur.util.Constants.NO_INTERNET
+import com.antoniokranjcina.imgur.util.Constants.UNEXPECTED_ERROR
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
 
@@ -53,15 +56,35 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
     override fun onPostClick(post: Post) {}
 
     private suspend fun requestPosts() {
-        val responseList = ImgurApi.service.getImgurResponse()
-        val posts = responseList.body()?.data?.posts
+        try {
+            showLoadingAnim()
 
-        Log.d(TAG, "requestPosts: $posts")
+            val responseList = ImgurApi.service.getImgurResponse()
+            val posts = responseList.body()?.data?.posts
+            postAdapter.submitList(posts)
 
-        postAdapter.submitList(posts)
+            hideLoadingAnim()
+
+        } catch (e: IOException) {
+            hideLoadingAnim()
+            Toast.makeText(requireContext(), NO_INTERNET, Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            hideLoadingAnim()
+            Toast.makeText(requireContext(), UNEXPECTED_ERROR, Toast.LENGTH_LONG).show()
+        }
     }
 
-    companion object {
-        private const val TAG = "HomeFragment"
+    private fun hideLoadingAnim() {
+        binding.apply {
+            progressBar.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showLoadingAnim() {
+        binding.apply {
+            progressBar.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        }
     }
 }
