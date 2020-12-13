@@ -44,7 +44,11 @@ class PostsAdapter(private val listener: PostOnClickListener) : ListAdapter<Post
 
                 val imagesCount = post.imagesCount
                 if (imagesCount > 1) {
-                    showImageCount(imagesCount)
+                    if (imagesCount >= 3) {
+                        showImageCount(3)
+                    } else {
+                        showImageCount(imagesCount)
+                    }
                 } else {
                     hideImageCount()
                 }

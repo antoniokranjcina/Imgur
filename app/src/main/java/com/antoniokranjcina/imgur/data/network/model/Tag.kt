@@ -5,12 +5,13 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Data(
-    val name: String,
+data class Tag(
+    @SerializedName("display_name")
+    val title: String,
     val followers: Long,
+    val description: String?,
     @SerializedName("total_items")
-    val totalItem: Long,
-    val description: String,
-    @SerializedName("items")
-    val posts: List<Post>
+    val totalItems: Long,
+    @SerializedName("accent")
+    val backgroundColor: String
 ) : Parcelable
