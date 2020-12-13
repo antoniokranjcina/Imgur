@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.antoniokranjcina.imgur.data.network.api.ImgurApi
 import com.antoniokranjcina.imgur.data.network.model.Post
 import com.antoniokranjcina.imgur.databinding.FragmentHomeBinding
@@ -41,6 +43,7 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
         binding.apply {
             recyclerView.apply {
                 adapter = postAdapter
+                layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
         }
     }
@@ -50,7 +53,10 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
         _binding = null
     }
 
-    override fun onPostClick(post: Post) {}
+    override fun onPostClick(post: Post) {
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(post, post.title)
+        findNavController().navigate(action)
+    }
 
     private suspend fun requestPosts() {
         try {

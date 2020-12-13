@@ -9,5 +9,21 @@
         android:id="@+id/homeFragment"
         android:name="com.antoniokranjcina.imgur.ui.home.HomeFragment"
         android:label="Imgur"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.antoniokranjcina.imgur.ui.details.DetailsFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_details">
+        <argument
+            android:name="post"
+            app:argType="com.antoniokranjcina.imgur.data.network.model.Post" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 </navigation>
