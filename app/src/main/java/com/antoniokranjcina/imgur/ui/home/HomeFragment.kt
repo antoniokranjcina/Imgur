@@ -1,8 +1,11 @@
 package com.antoniokranjcina.imgur.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -22,11 +25,7 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
 
     private val postAdapter = PostsAdapter(this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -38,8 +37,6 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
         viewLifecycleOwner.lifecycleScope.launch {
             requestPosts()
         }
-
-        viewLifecycleOwner.lifecycle
 
         binding.apply {
             recyclerView.apply {
@@ -64,27 +61,32 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
             postAdapter.submitList(posts)
 
             hideLoadingAnim()
-
         } catch (e: IOException) {
             hideLoadingAnim()
+            Log.e(TAG, "requestPosts: $NO_INTERNET, ${e.localizedMessage}")
             Toast.makeText(requireContext(), NO_INTERNET, Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             hideLoadingAnim()
+            Log.e(TAG, "requestPosts: $UNEXPECTED_ERROR, ${e.localizedMessage}")
             Toast.makeText(requireContext(), UNEXPECTED_ERROR, Toast.LENGTH_LONG).show()
         }
     }
 
     private fun hideLoadingAnim() {
         binding.apply {
-            progressBar.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
+            progressBar.visibility = GONE
+            recyclerView.visibility = VISIBLE
         }
     }
 
     private fun showLoadingAnim() {
         binding.apply {
-            progressBar.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
+            progressBar.visibility = VISIBLE
+            recyclerView.visibility = GONE
         }
+    }
+
+    companion object {
+        private const val TAG = "HomeFragment"
     }
 }
