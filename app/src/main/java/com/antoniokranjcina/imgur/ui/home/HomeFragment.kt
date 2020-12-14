@@ -1,24 +1,22 @@
 package com.antoniokranjcina.imgur.ui.home
 
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.antoniokranjcina.imgur.data.network.api.ImgurApi
 import com.antoniokranjcina.imgur.data.network.model.Post
 import com.antoniokranjcina.imgur.databinding.FragmentHomeBinding
-import com.antoniokranjcina.imgur.util.Constants.NO_INTERNET
-import com.antoniokranjcina.imgur.util.Constants.UNEXPECTED_ERROR
-import kotlinx.coroutines.launch
-import java.io.IOException
+import com.antoniokranjcina.imgur.repository.Repository
+import com.antoniokranjcina.imgur.util.Constants.LOADING
+import com.antoniokranjcina.imgur.util.Constants.NOT_LOADING
+import com.antoniokranjcina.imgur.viewmodel.MainViewModel
+import com.antoniokranjcina.imgur.viewmodel.MainViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
 
@@ -26,6 +24,15 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
     private val binding get() = _binding!!
 
     private val postAdapter = PostsAdapter(this)
+
+    private lateinit var mainViewModel: MainViewModel
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        mainViewModel = ViewModelProvider(this, MainViewModelFactory(Repository())).get(MainViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -36,9 +43,9 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            requestPosts()
-        }
+        observeLoading()
+        observeError()
+        observeDataFromApi()
 
         binding.apply {
             recyclerView.apply {
@@ -58,41 +65,31 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
         findNavController().navigate(action)
     }
 
-    private suspend fun requestPosts() {
-        try {
-            showLoadingAnim()
-
-            val responseList = ImgurApi.service.getImgurResponse()
-            val posts = responseList.body()?.data?.posts
-            postAdapter.submitList(posts)
-
-            hideLoadingAnim()
-        } catch (e: IOException) {
-            hideLoadingAnim()
-            Log.e(TAG, "requestPosts: $NO_INTERNET, ${e.localizedMessage}")
-            Toast.makeText(requireContext(), NO_INTERNET, Toast.LENGTH_LONG).show()
-        } catch (e: Exception) {
-            hideLoadingAnim()
-            Log.e(TAG, "requestPosts: $UNEXPECTED_ERROR, ${e.localizedMessage}")
-            Toast.makeText(requireContext(), UNEXPECTED_ERROR, Toast.LENGTH_LONG).show()
-        }
+    private fun observeLoading() {
+        mainViewModel.loading.observe(viewLifecycleOwner, {
+            if (it == LOADING) {
+                binding.recyclerView.showShimmer()
+            } else if (it == NOT_LOADING) {
+                binding.recyclerView.hideShimmer()
+            }
+        })
     }
 
-    private fun hideLoadingAnim() {
-        binding.apply {
-            progressBar.visibility = GONE
-            recyclerView.visibility = VISIBLE
-        }
+    private fun observeError() {
+        mainViewModel.error.observe(viewLifecycleOwner, {
+            Snackbar
+                .make(requireView(), it, Snackbar.LENGTH_INDEFINITE)
+                .setAction("Retry") {
+                    mainViewModel.getPosts()
+                }
+                .setActionTextColor(Color.WHITE)
+                .show()
+        })
     }
 
-    private fun showLoadingAnim() {
-        binding.apply {
-            progressBar.visibility = VISIBLE
-            recyclerView.visibility = GONE
-        }
-    }
-
-    companion object {
-        private const val TAG = "HomeFragment"
+    private fun observeDataFromApi() {
+        mainViewModel.readPosts.observe(viewLifecycleOwner, {
+            postAdapter.submitList(it)
+        })
     }
 }

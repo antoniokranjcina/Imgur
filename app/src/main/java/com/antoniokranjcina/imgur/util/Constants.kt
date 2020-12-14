@@ -6,4 +6,7 @@ object Constants {
 
     const val NO_INTERNET = "No Internet Connection."
     const val UNEXPECTED_ERROR = "Unexpected error has occurred, please try again later."
+
+    const val LOADING = "loading"
+    const val NOT_LOADING = "not_loading"
 }

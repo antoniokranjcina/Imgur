@@ -7,7 +7,7 @@
     android:background="#16486C69"
     tools:context=".ui.home.HomeFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.todkars.shimmer.ShimmerRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -18,9 +18,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_post">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        app:shimmer_recycler_layout="@layout/item_shimmer_post"
+        tools:listitem="@layout/item_shimmer_post" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
