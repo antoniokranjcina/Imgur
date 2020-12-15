@@ -1,7 +1,6 @@
 package com.antoniokranjcina.imgur.ui.details
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,7 +42,7 @@ class DetailsFragment : Fragment() {
         detailsAdapter.submitList(post.images)
         tagAdapter.submitList(post.tags)
 
-        Log.d(TAG, "onViewCreated: ${post.description}")
+//        Log.d(TAG, "onViewCreated: ${post.description}")
 
         binding.apply {
             recyclerViewImages.apply {

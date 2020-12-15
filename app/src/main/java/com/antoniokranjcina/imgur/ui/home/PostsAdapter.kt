@@ -56,7 +56,7 @@ class PostsAdapter(private val listener: PostOnClickListener) : ListAdapter<Post
                 try {
                     val type = post.images[0].type
                     val link = post.images[0].link
-                    val gif = post.images[0].gif
+                    val gif = post.images[0].gifv
 
                     if (type.contains("image", ignoreCase = true)) {
                         loadImage(link)

@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.antoniokranjcina.imgur.R
-import com.antoniokranjcina.imgur.data.network.model.Images
+import com.antoniokranjcina.imgur.data.network.model.Image
 import com.antoniokranjcina.imgur.databinding.ItemDetailsBinding
 
-class DetailsAdapter : ListAdapter<Images, DetailsAdapter.DetailsViewHolder>(DETAILS_COMPARATOR) {
+class DetailsAdapter : ListAdapter<Image, DetailsAdapter.DetailsViewHolder>(DETAILS_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailsViewHolder {
         val binding = ItemDetailsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -28,15 +28,15 @@ class DetailsAdapter : ListAdapter<Images, DetailsAdapter.DetailsViewHolder>(DET
     }
 
     inner class DetailsViewHolder(private val binding: ItemDetailsBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(images: Images) {
+        fun bind(image: Image) {
             binding.apply {
-                imageViewPostImage.load(images.link) {
+                imageViewPostImage.load(image.link) {
                     crossfade(true)
                     placeholder(R.drawable.ic_image_loading_background)
                 }
-                if (images.description != null && images.description.isNotEmpty()) {
+                if (image.description != null && image.description.isNotEmpty()) {
                     textViewDescription.visibility = VISIBLE
-                    textViewDescription.text = images.description
+                    textViewDescription.text = image.description
                 } else {
                     textViewDescription.visibility = GONE
                 }
@@ -45,9 +45,9 @@ class DetailsAdapter : ListAdapter<Images, DetailsAdapter.DetailsViewHolder>(DET
     }
 
     companion object {
-        private val DETAILS_COMPARATOR = object : DiffUtil.ItemCallback<Images>() {
-            override fun areItemsTheSame(oldItem: Images, newItem: Images) = oldItem.id == newItem.id
-            override fun areContentsTheSame(oldItem: Images, newItem: Images) = oldItem == newItem
+        private val DETAILS_COMPARATOR = object : DiffUtil.ItemCallback<Image>() {
+            override fun areItemsTheSame(oldItem: Image, newItem: Image) = oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: Image, newItem: Image) = oldItem == newItem
         }
     }
 }

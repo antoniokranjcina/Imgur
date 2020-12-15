@@ -7,6 +7,8 @@ object Constants {
     const val NO_INTERNET = "No Internet Connection."
     const val UNEXPECTED_ERROR = "Unexpected error has occurred, please try again later."
 
-    const val LOADING = "loading"
-    const val NOT_LOADING = "not_loading"
+    const val DATABASE_NAME = "imgur_posts_database"
+    const val POSTS_TABLE = "imgur_posts_table"
+    const val IMAGES_TABLE = "imgur_images_table"
+    const val TAGS_TABLE = "imgur_tags_table"
 }

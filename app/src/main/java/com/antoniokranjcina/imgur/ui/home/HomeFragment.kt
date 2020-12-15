@@ -9,11 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.antoniokranjcina.imgur.data.local.PostsDatabase
+import com.antoniokranjcina.imgur.data.local.entities.entitiesToPosts
 import com.antoniokranjcina.imgur.data.network.model.Post
 import com.antoniokranjcina.imgur.databinding.FragmentHomeBinding
 import com.antoniokranjcina.imgur.repository.Repository
-import com.antoniokranjcina.imgur.util.Constants.LOADING
-import com.antoniokranjcina.imgur.util.Constants.NOT_LOADING
 import com.antoniokranjcina.imgur.viewmodel.MainViewModel
 import com.antoniokranjcina.imgur.viewmodel.MainViewModelFactory
 import com.google.android.material.snackbar.Snackbar
@@ -31,7 +31,7 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mainViewModel = ViewModelProvider(this, MainViewModelFactory(Repository())).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(this, MainViewModelFactory(Repository(PostsDatabase.getDatabase(requireContext())))).get(MainViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -67,9 +67,9 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
 
     private fun observeLoading() {
         mainViewModel.loading.observe(viewLifecycleOwner, {
-            if (it == LOADING) {
+            if (it) {
                 binding.recyclerView.showShimmer()
-            } else if (it == NOT_LOADING) {
+            } else {
                 binding.recyclerView.hideShimmer()
             }
         })
@@ -89,7 +89,7 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
 
     private fun observeDataFromApi() {
         mainViewModel.readPosts.observe(viewLifecycleOwner, {
-            postAdapter.submitList(it)
+            postAdapter.submitList(it.entitiesToPosts())
         })
     }
 }

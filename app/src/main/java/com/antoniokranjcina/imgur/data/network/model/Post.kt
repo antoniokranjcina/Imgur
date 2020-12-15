@@ -1,6 +1,7 @@
 package com.antoniokranjcina.imgur.data.network.model
 
 import android.os.Parcelable
+import com.antoniokranjcina.imgur.data.local.entities.PostEntity
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
@@ -16,9 +17,30 @@ data class Post(
     val ups: Long,
     val downs: Long,
     @SerializedName("comment_count")
-    val commentCount: String,
+    val commentCount: Long,
     @SerializedName("images_count")
     val imagesCount: Long,
     val tags: List<Tag>,
-    val images: List<Images>
+    val images: List<Image>
 ) : Parcelable
+
+fun List<Post>.postsToEntities(): List<PostEntity> {
+    val list = mutableListOf<PostEntity>()
+    this.forEach {
+        list += PostEntity(
+            id = it.id,
+            title = it.title,
+            accountUrl = it.accountUrl,
+            description = it.description,
+            datetime = it.datetime,
+            views = it.views,
+            ups = it.ups,
+            downs = it.downs,
+            commentCount = it.commentCount,
+            imagesCount = it.imagesCount,
+            tags = it.tags,
+            images = it.images
+        )
+    }
+    return list
+}
