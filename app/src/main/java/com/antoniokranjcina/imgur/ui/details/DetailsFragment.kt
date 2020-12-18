@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.antoniokranjcina.imgur.data.network.model.Post
+import com.antoniokranjcina.imgur.data.local.entities.PostEntity
 import com.antoniokranjcina.imgur.databinding.FragmentDetailsBinding
 
 class DetailsFragment : Fragment() {
@@ -17,7 +17,7 @@ class DetailsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val navArgs: DetailsFragmentArgs by navArgs()
-    private lateinit var post: Post
+    private lateinit var post: PostEntity
 
     private val detailsAdapter = DetailsAdapter()
     private val tagAdapter = TagAdapter()

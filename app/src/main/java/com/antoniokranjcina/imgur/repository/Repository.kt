@@ -3,6 +3,7 @@ package com.antoniokranjcina.imgur.repository
 import androidx.lifecycle.LiveData
 import com.antoniokranjcina.imgur.data.local.PostsDatabase
 import com.antoniokranjcina.imgur.data.local.entities.PostEntity
+import com.antoniokranjcina.imgur.data.local.entities.checkIfAllPostsHaveImages
 import com.antoniokranjcina.imgur.data.network.api.ImgurApi
 import com.antoniokranjcina.imgur.data.network.model.Post
 import com.antoniokranjcina.imgur.data.network.model.postsToEntities
@@ -17,11 +18,12 @@ class Repository(private val postsDatabase: PostsDatabase) {
         postsDatabase.postsDao.insertAllPosts(postEntities)
     }
 
-    suspend fun getPosts() {
+    suspend fun getPostsFromDatabase() {
         val response = getPostsFromApi()
 
-        if (response != null) {
-            insertPostsInDatabase(response.postsToEntities())
+        val list = response?.postsToEntities()?.checkIfAllPostsHaveImages()
+        if (!list.isNullOrEmpty()) {
+            insertPostsInDatabase(list)
         }
     }
 }

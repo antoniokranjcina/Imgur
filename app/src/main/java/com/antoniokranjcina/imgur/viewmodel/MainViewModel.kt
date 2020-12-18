@@ -27,14 +27,14 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             loading.postValue(true)
             try {
-                repository.getPosts()
+                repository.getPostsFromDatabase()
                 loading.postValue(false)
             } catch (e: IOException) {
-                Log.d(TAG, "getPosts: ${e.localizedMessage}")
+                Log.d(TAG, "getPosts IOException: ${e.localizedMessage}")
                 error.postValue(NO_INTERNET)
                 loading.postValue(false)
             } catch (e: Exception) {
-                Log.d(TAG, "getPosts: ${e.localizedMessage}")
+                Log.d(TAG, "getPosts Exception: ${e.localizedMessage}")
                 error.postValue(UNEXPECTED_ERROR)
                 loading.postValue(false)
             }

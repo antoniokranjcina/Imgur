@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.antoniokranjcina.imgur.R
-import com.antoniokranjcina.imgur.data.network.model.Post
+import com.antoniokranjcina.imgur.data.local.entities.PostEntity
 import com.antoniokranjcina.imgur.databinding.ItemPostBinding
 
-class PostsAdapter(private val listener: PostOnClickListener) : ListAdapter<Post, PostsAdapter.PostViewHolder>(POST_COMPARATOR) {
+class PostsAdapter(private val listener: PostOnClickListener) : ListAdapter<PostEntity, PostsAdapter.PostViewHolder>(POST_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -36,7 +36,7 @@ class PostsAdapter(private val listener: PostOnClickListener) : ListAdapter<Post
             }
         }
 
-        fun bind(post: Post) {
+        fun bind(post: PostEntity) {
             binding.apply {
                 val points = post.ups.toString() + " Points"
                 textViewTitle.text = post.title
@@ -54,15 +54,19 @@ class PostsAdapter(private val listener: PostOnClickListener) : ListAdapter<Post
                 }
 
                 try {
-                    val type = post.images[0].type
-                    val link = post.images[0].link
-                    val gif = post.images[0].gifv
+                    val type = post.images?.get(0)?.type
+                    val link = post.images?.get(0)?.link
+                    val gif = post.images?.get(0)?.gifv
 
-                    if (type.contains("image", ignoreCase = true)) {
-                        loadImage(link)
-                    } else if (type.contains("video", ignoreCase = true)) {
-                        val thumbnail = gif!!.substring(0, gif.length - 1)
-                        loadImage(thumbnail)
+                    if (type != null) {
+                        if (type.contains("image", ignoreCase = true)) {
+                            loadImage(link!!)
+                        } else {
+                            if (type.contains("video", ignoreCase = true)) {
+                                val thumbnail = gif?.substring(0, gif.length - 1)
+                                loadImage(thumbnail!!)
+                            }
+                        }
                     }
                 } catch (e: Exception) {
                 }
@@ -97,13 +101,13 @@ class PostsAdapter(private val listener: PostOnClickListener) : ListAdapter<Post
     }
 
     interface PostOnClickListener {
-        fun onPostClick(post: Post)
+        fun onPostClick(post: PostEntity)
     }
 
     companion object {
-        private val POST_COMPARATOR = object : DiffUtil.ItemCallback<Post>() {
-            override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem.id == newItem.id
-            override fun areContentsTheSame(oldItem: Post, newItem: Post) = oldItem == newItem
+        private val POST_COMPARATOR = object : DiffUtil.ItemCallback<PostEntity>() {
+            override fun areItemsTheSame(oldItem: PostEntity, newItem: PostEntity) = oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: PostEntity, newItem: PostEntity) = oldItem == newItem
         }
     }
 }

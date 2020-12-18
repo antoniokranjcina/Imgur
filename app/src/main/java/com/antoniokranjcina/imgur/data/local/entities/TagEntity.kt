@@ -1,11 +1,28 @@
 package com.antoniokranjcina.imgur.data.local.entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import android.os.Parcelable
+import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
 import com.antoniokranjcina.imgur.util.Constants.TAGS_TABLE
+import kotlinx.parcelize.Parcelize
 
-@Entity(tableName = TAGS_TABLE)
+@Parcelize
+@Entity(
+    tableName = TAGS_TABLE,
+    foreignKeys = [
+        ForeignKey(
+            entity = PostEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["postId"],
+            onDelete = CASCADE
+        )
+    ],
+    indices = [
+        Index(
+            value = ["postId"]
+        )
+    ]
+)
 data class TagEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
@@ -17,4 +34,5 @@ data class TagEntity(
     val totalItems: Long,
     @ColumnInfo(name = "accent")
     val backgroundColor: String
-)
+) : Parcelable
+

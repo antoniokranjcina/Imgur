@@ -13,5 +13,5 @@ interface ImagesDao {
     suspend fun insertAllImages(imagesEntity: List<ImageEntity>)
 
     @Query("SELECT * FROM imgur_images_table")
-    fun readAllImagesFromDatabase(): List<ImageEntity>
+    suspend fun readAllImagesFromDatabase(): List<ImageEntity>
 }

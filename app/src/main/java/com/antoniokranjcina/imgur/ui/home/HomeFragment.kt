@@ -2,6 +2,7 @@ package com.antoniokranjcina.imgur.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.antoniokranjcina.imgur.data.local.PostsDatabase
-import com.antoniokranjcina.imgur.data.local.entities.entitiesToPosts
-import com.antoniokranjcina.imgur.data.network.model.Post
+import com.antoniokranjcina.imgur.data.local.entities.PostEntity
 import com.antoniokranjcina.imgur.databinding.FragmentHomeBinding
 import com.antoniokranjcina.imgur.repository.Repository
 import com.antoniokranjcina.imgur.viewmodel.MainViewModel
@@ -60,7 +60,7 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
         _binding = null
     }
 
-    override fun onPostClick(post: Post) {
+    override fun onPostClick(post: PostEntity) {
         val action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(post, post.title)
         findNavController().navigate(action)
     }
@@ -89,7 +89,12 @@ class HomeFragment : Fragment(), PostsAdapter.PostOnClickListener {
 
     private fun observeDataFromApi() {
         mainViewModel.readPosts.observe(viewLifecycleOwner, {
-            postAdapter.submitList(it.entitiesToPosts())
+            Log.d(TAG, "observeDataFromApi: $it")
+            postAdapter.submitList(it)
         })
+    }
+
+    companion object {
+        private const val TAG = "HomeFragment"
     }
 }

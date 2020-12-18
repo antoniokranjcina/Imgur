@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_details">
         <argument
             android:name="post"
-            app:argType="com.antoniokranjcina.imgur.data.network.model.Post" />
+            app:argType="com.antoniokranjcina.imgur.data.local.entities.PostEntity" />
         <argument
             android:name="title"
             app:argType="string" />

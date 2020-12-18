@@ -21,6 +21,6 @@ interface ImgurApi {
     }
 
     @Headers("Authorization: Client-ID $CLIENT_ID")
-    @GET("gallery/t/dogs?page=0&perPage=10")
+    @GET("gallery/t/dogs?page=0")
     suspend fun getImgurResponse(): Response<ImgurResponse>
 }

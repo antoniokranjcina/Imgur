@@ -27,7 +27,11 @@ class TagAdapter : ListAdapter<Tag, TagAdapter.TagsViewHolder>(TAG_COMPARATOR) {
     inner class TagsViewHolder(private val binding: ItemTagBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tag: Tag) {
             binding.apply {
-                layout.setBackgroundColor(Color.parseColor("#${tag.backgroundColor}"))
+                try {
+                    layout.setBackgroundColor(Color.parseColor("#${tag.backgroundColor}"))
+                } catch (e: Exception) {
+                    layout.setBackgroundColor(Color.parseColor("#f12445"))
+                }
                 textView.text = tag.title
             }
         }

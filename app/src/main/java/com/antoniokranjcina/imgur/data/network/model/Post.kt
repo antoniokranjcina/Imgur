@@ -44,3 +44,20 @@ fun List<Post>.postsToEntities(): List<PostEntity> {
     }
     return list
 }
+
+fun Post.asEntityModel(): PostEntity {
+    return PostEntity(
+        id = this.id,
+        title = this.title,
+        accountUrl = this.accountUrl,
+        description = this.description,
+        datetime = this.datetime,
+        views = this.views,
+        ups = this.ups,
+        downs = this.downs,
+        commentCount = this.commentCount,
+        imagesCount = this.imagesCount,
+        tags = this.tags,
+        images = this.images
+    )
+}

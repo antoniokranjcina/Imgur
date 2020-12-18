@@ -13,6 +13,6 @@ interface TagsDao {
     suspend fun insertAllTags(tagsEntity: TagEntity)
 
     @Query("SELECT * FROM imgur_tags_table")
-    fun readAllTagsFromDatabase(): List<TagEntity>
+    suspend fun readAllTagsFromDatabase(): List<TagEntity>
 
 }
